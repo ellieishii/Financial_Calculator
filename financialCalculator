@@ -1,0 +1,142 @@
+/*
+ * @author: Ellie Ishii
+ * 
+ *  This Java Account class is used as a financial calculator designed to compute
+ *  the account balance. This program enables users to input their initial amount, 
+ *  yearly interest rate, and monthly payment. Then the inputs are converted into
+ *  doubles within the actionPerformed method to calculate the next amount using the formula  
+ *  a * (1 + (i / 100)) + c within the computeOutputs method (where 'a' is the original amount 
+ *  in the bank account, 'i' is the percentage of the interest rate, and 'c' represents the monthly contribution).
+ *  The resulting account balance for each of the next twelve months are then displayed.
+ */
+
+package edu.ics211.h02;
+public class Account implements java.awt.event.ActionListener {
+
+  javax.swing.JFormattedTextField initialAmount = null;
+  javax.swing.JFormattedTextField yearlyInterest = null;
+  javax.swing.JFormattedTextField monthlyPayment = null;
+  javax.swing.JTextArea result = null;
+
+  /* here interest is monthly, so 10% interest per year is 0.8333% per month */
+  private static String computeOutputs(double amount, double interest, double payment) {
+	  
+	  // Create a StringBuilder to store the result by adding small pieces together
+	  StringBuilder result = new StringBuilder();
+	  
+	  // Create a loop to calculate the account balance for each month using the formula: a * (1 + (i / 100)) + c
+	  for (int month = 0; month <= 12; month++) {
+		  result.append(String.format("%.2f\n", amount));
+		  amount = amount * (1 + (interest / 100)) + payment;
+	  }
+	  
+	  
+	// TO DO: students fill in this code, this is just an example
+    // this example corresponds to an initial amount of 100.00,
+    // yearly interest of 12%, so monthly interest of 1%,
+    // and a 10.00 payment each month.
+	// Having more or fewer than two decimal digits is fine.
+    /*
+       return "100.00\n" +    // if the initial amount is negative, e.g. -100,
+      		    "111.00\n" +    // -91
+              "122.11\n" +    // -81.91
+              "133.33\n" +    // -72.73
+              "144.66\n" +    // -63.46
+              "156.11\n" +    // -54.09
+              "167.67\n" +    // -44.63
+              "179.34\n" +    // -35.08
+              "191.14\n" +    // -25.43
+              "203.05\n" +    // -15.68
+              "215.08\n" +    //  -5.84
+              "227.24\n" +    //   4.10
+              "239.51\n";     //  14.14
+     */
+	  
+	  // Return the result as a string 
+	  return result.toString();
+           
+  }
+
+	public void actionPerformed(java.awt.event.ActionEvent e) {
+		// only used for debugging:
+		// System.out.println("button pressed" +
+		// ", initial amount " + initialAmount.getText() +
+		// ", yearly interest " + yearlyInterest.getText() +
+		// "%, monthly payment " + monthlyPayment.getText());
+		
+		
+		// TO DO: students convert the amounts to doubles
+		// result.setText(computeOutputs(100.0, 12.0, 10.0));
+
+		// Convert the texts to double types
+		double initialAmountValue = Double.parseDouble(initialAmount.getText());
+		double yearlyInterestValue = Double.parseDouble(yearlyInterest.getText());
+		double monthlyInterest = yearlyInterestValue / 12.0; // Divide the yearly interest by 12 to obtain monthly interest
+		double monthlyPaymentValue = Double.parseDouble(monthlyPayment.getText());
+	
+		// Set the results 
+		result.setText(computeOutputs(initialAmountValue, monthlyInterest, monthlyPaymentValue));
+	}
+
+  private static javax.swing.JFormattedTextField createField() {
+    java.text.NumberFormat amountFormat;
+    amountFormat = java.text.NumberFormat.getNumberInstance();
+    amountFormat.setMinimumFractionDigits(2);
+    javax.swing.JFormattedTextField amount =
+       new javax.swing.JFormattedTextField(amountFormat);
+    amount.setValue(0.0);
+    amount.setColumns(10);
+    amount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+    amount.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
+    return amount;
+  }
+    
+  private static javax.swing.JPanel
+      numericField(String label, javax.swing.JFormattedTextField inputField) {
+    javax.swing.JPanel panel = new javax.swing.JPanel();
+    panel.setLayout(new javax.swing.BoxLayout(panel,
+                    javax.swing.BoxLayout.X_AXIS));
+    panel.add(inputField);
+    javax.swing.JLabel jl = new javax.swing.JLabel(label);
+    jl.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
+    panel.add(jl);
+    return panel;
+  }
+
+	// code to add the contents of the frame
+	private javax.swing.JPanel createContents() {
+		/* the container for all the elements */
+		javax.swing.JPanel panel = new javax.swing.JPanel();
+		initialAmount = createField();
+		yearlyInterest = createField();
+		monthlyPayment = createField();
+		panel.add(numericField("  initial amount ", initialAmount));
+		panel.add(numericField(" yearly interest ", yearlyInterest));
+		panel.add(numericField(" monthly payment ", monthlyPayment));
+		javax.swing.JButton b = new javax.swing.JButton(" Compute ");
+		b.addActionListener(this);
+		panel.add(b);
+		/* a space for the output */
+		result = new javax.swing.JTextArea("", 5, 50);
+		result.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 14));
+		result.setEditable(false);
+		result.setRows(5);
+		int vertical = javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+		int horizontal = javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+		javax.swing.JScrollPane spCurrent = new javax.swing.JScrollPane(result, vertical, horizontal);
+		panel.add(spCurrent);
+
+		panel.setLayout(new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS));
+		return panel;
+	}
+
+  public static void main(String[] args) {
+    javax.swing.JFrame frame = new javax.swing.JFrame("account");
+    frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+    Account account = new Account();
+    frame.getContentPane().add(account.createContents());
+    frame.pack();   // Size the frame
+    frame.setVisible(true); // Show the frame
+
+  }
+}
